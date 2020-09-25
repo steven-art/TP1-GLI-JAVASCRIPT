@@ -7,13 +7,14 @@ function DnD(canvas, interactor) {
   this.yPositionInit = 0;
   this.xPositionFinal = 0;
   this.yPositionFinal = 0;
-  
+  this.canvas = canvas;
+  this.interactor = interactor;
    //evt = document.querySelector(xPositionInit,yPositionInit);
-   boolpression = false;
+  this.boolpression = false;
   
   // Developper les 3 fonctions gérant les événements
   this.pression = function (evt) {
-    boolpression = true;
+    this.boolpression = true;
     var res = getMousePosition(canvas,evt);
    //  alert(evt);
     this.xPositionInit = res.x;
@@ -21,47 +22,57 @@ function DnD(canvas, interactor) {
    
     console.log("x :"+this.xPositionInit);
     console.log("y :"+this.yPositionInit);
-    interactor.onInteractionStart(this);
+    this.interactor.onInteractionStart(this);
   }.bind(this);
    
   
   this.move = function (evt){ 
       
-    if(boolpression){
-      var res = getMousePosition(canvas,evt);
+    if(this.boolpression){
+      const res = getMousePosition(canvas,evt);
       //  alert(evt);
        this.xPositionFinal = res.x;
        this.yPositionFinal = res.y;
       //alors on dessin 
       console.log("x :"+this.xPositionFinal);
       console.log("y :"+this.yPositionFinal);
-      interactor.onInteractionUpdate(this);
+      this.interactor.onInteractionUpdate(this);
 
       }
-  }.bind(this)
+  }.bind(this);
   
   this.relaxe = function (evt){
-      if(boolpression){
-      var res = getMousePosition(canvas,evt);
+      if(this.boolpression){
+      const res = getMousePosition(canvas,evt);
       this.xPositionFinal = res.x;
       this.yPositionFinal = res.y;
       //alert(evt);
       console.log("x :"+this.xPositionFinal);
       console.log("y :"+this.yPositionFinal);
-      boolpression =false;
-      interactor.onInteractionEnd(this);
+      this.boolpression =false;
+      this.interactor.onInteractionEnd(this);
 
       }
-  // Associer les fonctions précédentes aux évènements du canvas.
-  
-
 
 }.bind(this);
 
-canvas.addEventListener('mousedown', this.pression, false);
-canvas.addEventListener('mousemove', this.move, false);
-canvas.addEventListener('mouseup', this.relaxe, false);
-}
+this.getXInit =function(){
+  return this.xPositionInit;
+}.bind(this);
+this.getYInit =function(){
+  return this.yPositionInit;
+}.bind(this);
+this.getXfinal =function(){
+  return this.xPositionFinal;
+}.bind(this);
+this.getYfinal =function(){
+  return this.yPositionFinal;
+}.bind(this);
+
+this.canvas.addEventListener('mousedown', this.pression, false);
+this.canvas.addEventListener('mousemove', this.move, false);
+this.canvas.addEventListener('mouseup', this.relaxe, false);
+};
 
 // Place le point de l'événement evt relativement à la position du canvas.
 function getMousePosition(canvas, evt) {
